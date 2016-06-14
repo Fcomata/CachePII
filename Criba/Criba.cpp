@@ -31,8 +31,8 @@ int main(){
 		}
 	
 		
-		//printf("%4d",prim_num);
-		//for(int a=0; a<=tam; a++){if(BoolNum[a]==true){printf("%4d",a);printf("  ");}}
+		printf("%4d",prim_num);
+		for(int a=0; a<=tam; a++){if(BoolNum[a]==true){printf("%4d",a);printf("  ");}}
 		
 	
 	}
