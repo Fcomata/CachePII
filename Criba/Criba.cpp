@@ -1,25 +1,5 @@
-
-	int tam =1 000 000;
-	bool [tam] BoolNum;
-
-void main(){
+#include <stdio.h> 
 	
-	int prim_num=0;
-	
-	
-	criba(BoolNum, tam);
-	
-	for(int a=0; a<=tam; a++){
-		
-		if(BoolNum[a]==true){prim_num++;}
-		
-		}
-		
-		cout<<prim_num<<endl;
-	
-	}
-	
-
 
 void criba(bool m[], int tam){
     m[0] = false;
@@ -34,3 +14,29 @@ void criba(bool m[], int tam){
         }
     }
 }
+
+int main(){
+	
+	int tam =48615; //Para sacar 5000 numeros primos
+	bool BoolNum[tam] ;
+	
+	int prim_num=0;
+
+	criba(BoolNum, tam);
+	
+	for(int a=0; a<=tam; a++){
+		
+		if(BoolNum[a]==true){prim_num++;}
+		
+		}
+	
+		
+		//printf("%4d",prim_num);
+		//for(int a=0; a<=tam; a++){if(BoolNum[a]==true){printf("%4d",a);printf("  ");}}
+		
+	
+	}
+	
+
+
+
