@@ -99,8 +99,8 @@ void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 		for(int i =0; i<this->blockamm;i++){
 			if(tag == this->gettag(set,i) &&(this->getvalid(set,i) != INV)){
 				incache =1;
-				this->setvalid(set,i,MOD)
-				if(this->getvalid(set,i) ==SHA){
+				this->setvalid(set,i,MOD);
+				if(this->getvalid(set,i) == SHA){
 					for(int j =0; j<pair->blockamm;j++){
 						if(tag == pair->gettag(set,j)){
 							pair->setvalid(set,j,INV);			
@@ -108,7 +108,7 @@ void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 					}				
 				}
 			}
-			else if(tag == this->gettag(set,i) &&(this->getvalid(set,i) == INV){
+			else if(tag == this->gettag(set,i) && this->getvalid(set,i) == INV){
 				this->setvalid(set,i,MOD);
 				incache =0;
 				for(int j =0; j<pair->blockamm;j++){
