@@ -3,7 +3,7 @@ all:
 C: Criba.cpp
 	g++ Criba.cpp -o Criba
 S: Secuencial.cpp
-	mpic++ Secuencial.cpp -o Secuencial
+	mpic++ -fopenmp Secuencial.cpp -o Secuencial
 P:Paralelo.cpp
 	mpic++ -fopenmp Paralelo.cpp -o Paralelo
 clean:
