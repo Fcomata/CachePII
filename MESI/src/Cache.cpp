@@ -69,6 +69,7 @@ void Cache::setpair(Cache *pair){
 }
 void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación porque utilizaba validbit, Si existe un error de fijo esta aquí.
 	bool miss = 1;
+	bool incache = 0;
 	u32 tag,index,temp;
 	int set,assoc;
 	temp = blockquant+indexquant;
@@ -78,29 +79,27 @@ void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 	index = temp >> blockquant;
 	set = (int) index;
 	if(action== R){
-		miss = 0;
 		for(int i = 0; i<this->blockamm;i++){
 			if(tag == this->gettag(set,i) && this->getvalid(set,i)==INV){
-				miss = 1;
-				this->misses++;
 				for(int j =0; j<pair->blockamm;j++){
 					if(tag == pair->gettag(set, j) && pair->getvalid(set,j) !=INV){
 						pair->setvalid(set,j,SHA);
 						this->setvalid(set,i,SHA);
+						incache = 1;
 					}
 					else{
-						this->setvalid(set,i,EXC);					
+						this->setvalid(set,i,EXC);
+						incache = 0;					
 					}
 				}
 			}
 		}
 	}
-	else if(action==W){
-		miss =1;
+	else if(action==W){ 
 		for(int i =0; i<this->blockamm;i++){
-			if(tag == this->gettag(set,i) &&(this->getvalid(set,i) != INV){
-				miss =0;
-				this->hits++;
+			if(tag == this->gettag(set,i) &&(this->getvalid(set,i) != INV)){
+				incache =1;
+				this->setvalid(set,i,MOD)
 				if(this->getvalid(set,i) ==SHA){
 					for(int j =0; j<pair->blockamm;j++){
 						if(tag == pair->gettag(set,j)){
@@ -109,12 +108,26 @@ void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 					}				
 				}
 			}
-	}
-	if(miss){
+			else if(tag == this->gettag(set,i) &&(this->getvalid(set,i) == INV){
+				this->setvalid(set,i,MOD);
+				incache =0;
+				for(int j =0; j<pair->blockamm;j++){
+					if(tag == pair->gettag(set,j)){
+						pair->setvalid(set,i,INV);
+						incache =1;
+					}
+				}			
+			}
+		}
+
+	}	
+	if(!incache){
 		assoc = this->getassoc(set);
 		this->cache[set][assoc].settag(tag);
 		this->setvalid(set,assoc,EXC); //cambie a EXC, era 1
-		this->misses++;
+		if(action==W){
+		this->setvalid(set,assoc,MOD);		
+		}
 	}
 }
 
@@ -136,7 +149,7 @@ int Cache::getassoc(int index){ //Politica de reemplazo
 	for(int i =0; i < this->blockamm; i++){
 				
 
-		if(!this->getvalid(index,i)){ //Si es un bit invalido			
+		if(this->getvalid(index,i)==INV){ //Si es un bit invalido			
 			notvalid[j] = i; //Guarda en un vector de no validos la posicion del bloque no valido
 			j++;		
 		}
