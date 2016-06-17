@@ -1,22 +1,38 @@
 #include "mpi.h"
 #include <time.h> 
 #include <stdio.h> 
+#include <vector>
+#include <omp.h>
+#include <math.h> 
+
+using namespace std;
 
 
 int tam =48615; //Para sacar 5000 numeros primos
 
+
 void criba(bool m[], int tam){
     m[0] = false;
     m[1] = false;
+ 
+#pragma omp parallel for
     for(int i = 2; i <= tam; ++i) 
         m[i] = true;
 
+
+
+#pragma omp parallel for
     for(int i = 2; i*i <= tam; ++i) {
+	
         if(m[i]) {
+
             for(int h = 2; i*h <= tam; ++h)
                 m[i*h] = false;
         }
+
+	
     }
+ 
 }
 
 float timing(int iteraciones){
@@ -45,9 +61,9 @@ float timing(int iteraciones){
 
 int main(void) 
 { 
-	
+	omp_set_num_threads(4);
 	int iteraciones=3000;
-	
+
 	float Time1 = timing(iteraciones);
 	
 
