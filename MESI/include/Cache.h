@@ -57,7 +57,7 @@ class Cache{
 		*	hit o miss, y procede a extraer el tag para escribirlo en el 
 			bloque correspondiente. el bool pasa el valor de Read o Write
 		*/
-		void settag(u32,bool);
+		bool settag(u32,bool);
 		//! Metodo gettag.
 		//! Retorna el tag que está en la dirección (set, assoc) de la matriz del caché.
 		u32 gettag(int, int);

@@ -67,8 +67,8 @@ Cache::~Cache(){
 void Cache::setpair(Cache *pair){
 	this->pair = pair;
 }
-void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación porque utilizaba validbit, Si existe un error de fijo esta aquí.
-	bool miss = 1;
+bool Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación porque utilizaba validbit, Si existe un error de fijo esta aquí.
+	bool miss = 1; //Hay que a;adir el caso trivial sin paralelismo, croe que esta en la otra compu.
 	bool incache = 0;
 	u32 tag,index,temp;
 	int set,assoc;
@@ -129,6 +129,7 @@ void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 		this->setvalid(set,assoc,MOD);		
 		}
 	}
+	return incache;
 }
 
 u32 Cache::gettag(int set, int assoc){
