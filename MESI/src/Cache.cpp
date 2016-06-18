@@ -78,6 +78,22 @@ void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 	temp = memaddress - temp;
 	index = temp >> blockquant;
 	set = (int) index;
+	if(this->pair == this){
+		for(int i = 0; i<this->blockamm;i++){
+			if(tag == this->gettag(set,i) && this->getvalid(set,i)){
+				miss = 0;
+				this->hits++;
+				break;
+			}
+		}
+		if(miss){
+			assoc = this->getassoc(set);
+			this->cache[set][assoc].settag(tag);
+			this->setvalid(set,assoc,EXC);
+			this->misses++;
+		}
+	}
+	else{
 	if(action== R){
 		for(int i = 0; i<this->blockamm;i++){
 			if(tag == this->gettag(set,i) && this->getvalid(set,i)==INV){
@@ -130,7 +146,7 @@ void Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 		}
 	}
 }
-
+}
 u32 Cache::gettag(int set, int assoc){
 	return this->cache[set][assoc].gettag();	
 }
