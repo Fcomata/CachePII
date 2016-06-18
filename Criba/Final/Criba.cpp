@@ -18,20 +18,24 @@ using namespace std;
 
 	bool 	BoolNum[Size];
   	double  wtime;
-
+        MPI_Status status;
 	
-void invalid_Noprime(int n, int id, int p){
-	
-ierr = MPI_Bcast ( BoolNum, 1, MPI_INT, 0, MPI_COMM_WORLD );
 
-for (int i = 2 + id; i <= n; i = i + p ){
-        if(BoolNum[i]) {
-		maxSize = Size/n;
-        	for(int h = 2; h <= maxSize; ++h)
-        		BoolNum[i*h]= false;
+void invalid_Noprime(int n){
 
+int chunks = (rootSize*4)/p;
+
+for (int i = 2 + id*chunks; i <= (id+1)*chunks ; i = i+1){
+        if(BoolNum[i]==true) {
+		maxSize = Size/i;
+        	for(int h = 2; h <= maxSize; ++h){
+        		BoolNum[i*h]= false;             
+                        }
 		}
+
 	}
+
+
 }
 
 void criba(){
@@ -43,7 +47,7 @@ void criba(){
 	}
 
     rootSize = sqrt(Size);
-    invalid_Noprime(Size,id,p);
+    invalid_Noprime(Size);
 	
     }
  
@@ -81,14 +85,22 @@ float timing(int iteraciones){
 int main(int argc,char *argv[]) 
 { 
 	int iteraciones=3000;
+	int cant_primes=0;
+
 	ierr = MPI_Init ( &argc, &argv );
   	ierr = MPI_Comm_size ( MPI_COMM_WORLD, &p );
 	//printf("#P: %d \n", p);
   	ierr = MPI_Comm_rank ( MPI_COMM_WORLD, &id );
 	float Time1 = timing(iteraciones);
+	
+	if(id==0){
+	for(int c=0; c<48615;c++){
+		if(BoolNum[c]==true)	cant_primes++;
+	}
+
+	printf("Cantidad de primos %d \n", cant_primes);
+}
 	ierr = MPI_Finalize ( );
-
-
 return 0; 
 }
 
