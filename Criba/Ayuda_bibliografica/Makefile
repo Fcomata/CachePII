@@ -5,7 +5,8 @@ C: Criba.cpp
 S: Secuencial.cpp
 	mpic++ -fopenmp Secuencial.cpp -o Secuencial
 P:Paralelo.cpp
-	mpic++ -fopenmp Paralelo.cpp -o Paralelo
+	mpic++ Paralelo.cpp -o Paralelo
+	mpirun -np 4 Paralelo
 clean:
 	rm Secuencial
 	rm Paralelo
