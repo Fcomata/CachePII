@@ -1,4 +1,4 @@
-_OBJS = Bloque.o Cache.o
+_OBJS = Bloque.o Cache.o System.o
 CC = g++
 DEBUG = -g
 ODIR = obj
@@ -19,4 +19,4 @@ $(TARGET): $(OBJS) main.cpp
 	$(CC) $(LFLAGS) $(INC) main.cpp $(OBJS)  -o $(TARGET)
 .PHONY: clean
  clean:
-	rm -f $(ODIR)/*.o $(TARGET)
+	rm -rf $(ODIR) $(TARGET)

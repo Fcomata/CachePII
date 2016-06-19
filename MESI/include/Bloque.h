@@ -17,6 +17,7 @@
 #include<math.h>
 #ifndef BLOQUE_H
 #define BLOQUE_H
+#include <iostream>
 typedef unsigned long u32;
 enum validbit{
 	MOD,EXC,SHA,INV
