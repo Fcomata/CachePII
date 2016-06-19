@@ -49,6 +49,12 @@ class Cache{
 		* Entre demás funciones.
 		*/
 		Cache(int,int,int,Cache*);
+		//! Constructor de copia
+		//! Se utiliza para crea un caché a partir de otro.
+		Cache(const Cache&);
+		//! Sobrecarga del operador "=".
+		//! Se sobrecarga el operador para llamar al constructor de copia utilizando "=".
+		Cache &operator=(const Cache&);
 		//! Método Destructor.
 		//! Actualmente no implementado.
 		virtual ~Cache();
@@ -69,6 +75,9 @@ class Cache{
 		int gethits();
 		//! Establece una pareja a este caché.
 		void setpair(Cache*);
+		//! Método getvalid con parámetro U32
+		//!getvalid en funcion de la dirección de memoria
+		validbit getvalid(u32);
 
 	protected:
 		

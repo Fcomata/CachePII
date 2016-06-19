@@ -18,6 +18,7 @@ Bloque::Bloque(){
 	this->blocksize = 0;
 	this->valid = INV;
 	this->tag =0;
+
 }
 Bloque::Bloque(const Bloque& other){
 	this->blocksize = other.blocksize;
@@ -28,6 +29,7 @@ Bloque::Bloque(int tamano){
 	this->blocksize = tamano;
 	this->valid = INV;
 	this->tag =0;
+
 }
 
 Bloque &Bloque::operator=(const Bloque& other){
@@ -35,6 +37,7 @@ Bloque &Bloque::operator=(const Bloque& other){
 		this->blocksize = other.blocksize;
 		this->valid = other.valid;
 		this->tag = other.tag;
+
 	}
 	return *this;
 }
