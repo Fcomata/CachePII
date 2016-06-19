@@ -135,6 +135,7 @@ bool Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 			c2 = pair->getvalid(memaddress);
 		}
 		else if(pair->getvalid(memaddress) !=INV){ //ambos son shared
+			//cout<<"aquí deberia entrar"<<endl;
 			incache =0;
 			this->misses++;
 			c1 = SHA;
@@ -145,13 +146,14 @@ bool Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 			for(int i = 0; i<this->blockamm;i++){
 				if(tag == pair->gettag(set,i) && pair->getvalid(set,i) != INV){
 					//if(this->getvalid(set,i) == MOD) incache =0;
-					cout<<"Entré aquí"<<endl;
+					//cout<<"Entré aquí"<<endl;
 					if(pair->getvalid(set,i) == MOD){
 						incache =0;
 					}
 					pair->setvalid(set,i,SHA);
-				}
 					break;
+				}
+					
 			}
 		}
 		else{ //El propio es EXC
@@ -166,26 +168,31 @@ bool Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 	}
 	
 	else if(action==W){  //Falta modificar para los writes
-		
+		//cout<<"La acción es W"<<endl;
 		if(this->getvalid(memaddress) != INV && this->getvalid(memaddress) != SHA){
+			//cout<<"opción 1"<<endl;
 			c1 = MOD;
 			incache =1;
-			for(int i =0; i>this->blockamm; i++){
+			this->hits++;
+			for(int i =0; i<this->blockamm; i++){
 				if(tag == this->gettag(set,i)){
 					this->setvalid(set,i,MOD);
 				}
 			}			
 		}
 		else if(this->getvalid(memaddress) != INV && this->getvalid(memaddress) == SHA){
+			//cout<<"opción 2"<<endl;
+			this->hits++;
 			c1 = MOD;
 			c2 = INV;
 			incache = 1;
-			for(int i =0; i>this->blockamm; i++){
+			for(int i =0; i<this->blockamm; i++){
 				if(tag == this->gettag(set,i)){
+					//cout<<"escribe MOD a self"<<endl;
 					this->setvalid(set,i,MOD);
 				}
 			}
-			for(int i =0; i>pair->blockamm;i++){
+			for(int i =0; i<pair->blockamm;i++){
 				if(tag == pair->gettag(set,i)){
 					pair->setvalid(set,i,INV);
 				}
@@ -193,47 +200,30 @@ bool Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 		}
 		
 		else if(this->getvalid(memaddress) == INV && pair->getvalid(memaddress) == INV){
+			//cout<<"opción 3"<<endl;
+			this->misses++;
 			c1 = MOD;
 			incache =0;
 			assoc = this->getassoc(set);
 			this->cache[set][assoc].settag(tag);
-			this->setvalid(set,assoc,EXC);
+			this->setvalid(set,assoc,MOD);
 		}
-		else{
+		else{ //aqui tengo un problema
+			//cout<<"opción 4"<<endl;
 			c1 = MOD;
 			incache =0;
 			assoc = this->getassoc(set);
 			this->cache[set][assoc].settag(tag);
-			this->setvalid(set,assoc,EXC);
-			for(int i =0; i>pair->blockamm;i++){
+			this->setvalid(set,assoc,MOD);
+			cout<<"Ya modificó al 1"<<endl;
+			cout<<"tag: "<< tag<<endl;
+			for(int i =0; i<pair->blockamm;i++){
+				cout<<"pair: "<<pair->gettag(set,i)<<endl;
 				if(tag == pair->gettag(set,i)){
+					cout<<"aquí lo invalidé"<<endl;
 					pair->setvalid(set,i,INV);
 				}		
 			}	
-		}
-		
-		for(int i =0; i<this->blockamm;i++){
-			if(tag == this->gettag(set,i) &&(this->getvalid(set,i) != INV)){
-				incache =1;
-				this->setvalid(set,i,MOD);
-				if(this->getvalid(set,i) == SHA){
-					for(int j =0; j<pair->blockamm;j++){
-						if(tag == pair->gettag(set,j)){
-							pair->setvalid(set,j,INV);			
-						}
-					}				
-				}
-			}
-			else if(tag == this->gettag(set,i) && this->getvalid(set,i) == INV){
-				this->setvalid(set,i,MOD);
-				incache =0;
-				for(int j =0; j<pair->blockamm;j++){
-					if(tag == pair->gettag(set,j)){
-						pair->setvalid(set,i,INV);
-						incache =1;
-					}
-				}			
-			}
 		}
 
 	}	
