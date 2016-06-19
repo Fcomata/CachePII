@@ -1,12 +1,15 @@
 all: 
 
 
-P:Criba.cpp
-	mpic++ -fopenmp Criba.cpp -o Paralelo
+Criba:Criba.cpp
+	mpic++ Criba.cpp -o Paralelo
 	mpirun -np 4 Paralelo
-S:Criba.cpp
-	mpic++ -fopenmp CribaSecuencial.cpp -o Secuencial
-	./Secuencial
+Secuencial:CribaSecuencial.cpp
+	mpic++ CribaSecuencial.cpp -o Secuencial
+	mpirun -np 1 Secuencial
+Paralelo:Paralelo.cpp
+	mpic++ Paralelo.cpp -o Paralelo
+	mpirun -np 4 Paralelo
 clean:
 	rm Paralelo
 	
