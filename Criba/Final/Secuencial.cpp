@@ -2,7 +2,7 @@
 #include <time.h> 
 #include <stdio.h> 
 #include <vector>
-#include <math.h> 
+#include <math.h>  
 
 using namespace std;
 
@@ -15,13 +15,13 @@ using namespace std;
 	
 void invalid_Noprime(int n){
 	
-for (int i = 2 ; i <= n; i++ ){
-        if(BoolNum[i]==true) {
-		maxSize = Size/i;
-        	for(int h = 2; h <= maxSize; ++h)
-        		BoolNum[i*h] = false;
+	for (int i = 2 ; i <= n; i++ ){		//Loop Principal, verifica si el numero es primo
+		if(BoolNum[i]==true) {
+			maxSize = Size/i;
+			for(int h = 2; h <= maxSize; ++h) //Loop Secundario, invalida los multiplos
+				BoolNum[i*h] = false;
+			}
 		}
-	}
 }
 
 void criba(){

@@ -1,94 +1,115 @@
-//      Sieve of Eratosthenes
-// version 1
-// tomado de 
-// PARALLEL PROGRAMMING in C with MPI and OpenMP
-// Michael J. Quinn
-// Ed. Mc Graw Hill
-// capitulo 5
-//
-                                                                                                                    
-                                                                                                                         
-#include <mpi.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include "mpi.h"
+#include <time.h> 
+#include <stdio.h> 
+#include <vector>
+#include <math.h> 
 
-int main (int argc, char *argv[ ]){
-	int 	count;          //Local prime count
-	double 	elapsed_time;   //Parallel execution time
-	int 	first;        	//Index of first multiple
-	int 	global_count;	//Global prime count
-	int 	high_value; 	//Highest value on this proc
-	int 	i;
-	int 	id;             //Process ID number
-	int 	index;          //Index of current prime
-	int 	low_value;      //Lowest value on this proc
-	char 	*marked;        //Portion of 2, <85>, 'n'
-	int 	n;              //Sieving from 2, <85>, 'n'
-	int 	p;              //Number of processes
-	int 	proc0_size;     //Size ofproc 0's subarray
-	int 	prime;          //Current prime
-	int 	size;           //Elements in 'marked'
+using namespace std;
 
-	MPI_Init(&argc, &argv);    
-	MPI_Comm_rank (MPI_COMM_WORLD, &id);
-	MPI_Comm_size (MPI_COMM_WORLD, &p);
-	
-	MPI_Barrier (MPI_COMM_WORLD);
-	elapsed_time = - MPI_Wtime( );                                                                                                                     
+#define	Size 48615 //Para sacar 5000 numeros primos
 
-	n = 48615;       
-        prime = 2;                                                                                                                 
-	low_value  = 2 + id*n/p;
-	high_value = 2+ ((id+1)*n/p -1);
-	size       = high_value-low_value+1; 
-        proc0_size = (n-1)/p;
-
- 	marked = (char *) malloc(size*sizeof(char));                                                                                                                         
-                                                                                                              
-	//inicialize datablock
-	for (i =0; i < size; i++) marked[i]=0;
-
-	if (id==0) index = 0;
-
+	int 	maxSize,  	//Tamaño maximo en el loop secundario
+		id,		//Identificacion del CPU
+		p,		//Numero de Procesos
+		global_count,
+		ierr;		//MPI ERR
 
 	
+	int 	global[Size];
+	int 	c;
+ 	int BoolNum[Size];	//Arreglo de Validez de Numeros	
 
-	while (prime * prime <=n){
 
-		if (prime * prime > low_value)	first = prime * prime - low_value;
+void criba(){
 
-		else{
-			if (!(low_value % prime)) first = 0;
-
-			else first = prime - (low_value % prime);
+	
+   	 //Inicializacion del arreglo  
+	 BoolNum[0] = 0;
+	 BoolNum[1] = 0;
+	 
+	for(int i = 2; i <= Size; ++i){
+		BoolNum[i] = 1;	//Poner todos los datos como validos
+		global[i] = 0;
 		}
-		
-		for (i = first; i < size; i+=prime) marked[i]=1;
+	
+	 //Metodo para Invalidar los No_Primos
+	int chunks = sqrt(Size)/p;
 
+
+	for (int i = 2 + id*chunks; i <= (id+1)*chunks ; i = i+1){ //Loop Principal, verifica si el numero es primo
+		if(BoolNum[i]==1) {
+			maxSize = Size/i;
+			for(int h = 2; h <= maxSize; ++h){ //Loop Secundario, invalida los multiplos
+				BoolNum[i*h]= 0;       
+		                }
+		
+			}
+ 		
+		}
+
+	
+	
+	
+	    }
+ 
+
+
+float timing(int iteraciones){
+	
+	//Init  Variables para medir el tiempo
+	double start, end, time, time_P;  
+	 
+	for(int a =0; a<iteraciones; a++){
+		if(id==0)
+			start = MPI_Wtime(); 		//Toma el tiempo de inicio
+
+		criba();				//Correr el algoritmo
 
 		if(id==0){
-			while (marked[++index]);
-			prime = index+2;
+			end = MPI_Wtime();		//Toma el tiempo de finalizacion
+			time = end-start;		//Calcula el tiempo de duracion
+			time_P = time_P + time;		//Suma los tiempos en las iteraciones	
+		}
+	}
+
+	if(id==0){
+		time_P = time_P/(iteraciones); 		//Saca el promedio(valor esperado) del algoritmo
+		printf("The time was: %f ms\n", time_P*1000 );
+	}
+
+	return time_P;
+	
+	}
+
+
+
+int main(int argc,char *argv[]) 
+{ 
+	
+	//Init Variables
+	int iteraciones=3000; 				//Iteraciones para sacar el valor esperado de tiempo
+	int cant_primes=0; 				//Cantidad de primos encontrados
+
+	//Init MPI
+	ierr = MPI_Init ( &argc, &argv );
+  	ierr = MPI_Comm_size ( MPI_COMM_WORLD, &p ); 	//Cantidad de Procesos P
+  	ierr = MPI_Comm_rank ( MPI_COMM_WORLD, &id );	//IDs de CPUs
+	MPI_Barrier (MPI_COMM_WORLD);
+	if(id==0){printf("#P: %d \n", p);}
+
+	float Time1 = timing(iteraciones);		//Calcula el valor esperado del tiempo que dura el algoritmo
+	MPI_Allreduce(BoolNum, global, Size, MPI_INT, MPI_PROD, MPI_COMM_WORLD);
+	if(id==0){
+	for(int c=0; c<48615;c++){
+		if(global[c]==1)cant_primes++;	//Cuenta los primos de la lista
 		}
 
-        MPI_Bcast (&prime, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	}
-	
-	count = 0;
-
-	for (i = 0;i < size; i++)
-		if (marked [i]==0){count++;}
-		
-	MPI_Reduce(&count, &global_count, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-
-	elapsed_time +=  MPI_Wtime();
-	                                                                                                                         
-	if(id==0){
-		printf ("Hay %d primos menores o iguales a %d\n"		, global_count, n);
-		printf ("\nTotal tiempo transcurrido: %10.6f segundos\n", elapsed_time);
+	printf("Cantidad de primos %d \n", cant_primes); //Imprime la Cantidad de Primos encontrados
 	}
 
-	MPI_Finalize();
-	return 0;
+	//Fin MPI
+	ierr = MPI_Finalize ( );
+
+return 0; 
 }
+
