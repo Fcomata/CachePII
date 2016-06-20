@@ -126,9 +126,10 @@ class Cache{
 		//! Variable privada hits.
 		//! Almacena la cantidad de hits que se obtuvieron desde que se creo el cache.
 		int hits;
-		Cache *pair;
-		//! Instancia privada *pair.
+		//! Variable privada *pair.
 		//! Almacena la posición de memoria de la pareja del cache. (En caso de cache compartido con protocolo MESI).
+		Cache *pair;
+
 };
 
 #endif //CACHE_H

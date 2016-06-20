@@ -1,3 +1,19 @@
+/*  
+    This file is part of EstructurasII.
+
+    EstructurasII is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    EstructurasII is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with EstructurasII.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "System.h"
 #include <iostream>
 #include <fstream>
@@ -23,7 +39,7 @@ int main(){ // El archivo tiene 49642128 lineas
 		i++;
 		aux = "0x" + str.substr(0,8); // toma los 8 primeros caracteres.
 		if(isspace(aux[9])){
-			aux = "0x" +str.substr(0,7);
+			aux = "0x" +str.substr(0,7); //Hay direcciones de menos bits, si son ellas se especifica
 			flag =1;
 		}
 		auxi = stoul(aux,nullptr,16);
@@ -46,9 +62,9 @@ int main(){ // El archivo tiene 49642128 lineas
 			cpus.settag(CPU1,W,auxi);
 		}
 		
-		if(i>= 49642119){
+		if(i>= 49642119){//imprime las últimas direcciones
 			if(i== 49642119){
-			cout<<"CPU"<<"  "<<"Dirección"<<" Acción"<< " L11"<<" L12"<<" L2"<<endl;
+			cout<<"CPU"<<"  "<<"Dirección"<<" Acción"<< " L11"<<" L12"<<" L2"<<endl; 
 			}
 			d = cpus.getvalid(L11,auxi);
 			switch(d){
@@ -110,35 +126,3 @@ int main(){ // El archivo tiene 49642128 lineas
 	cout<<"misses: "<<cpus.gettotalmisses()<<endl;
 	cout<<"hits: "<<cpus.gettotalhits()<<endl;
 }
-	//cout<<"Se creo el sistema, la dirección debería ser invalida"<<endl;
-	/*
-	
-	d =cpus.getvalid(L11,0x00AF00);
-	cout<<d<<endl; //Antes de que se escriba Debería ser invalid
-	
-	cpus.settag(CPU0,R,0x00AF00); //escribe en caché Ier miss
-	
-	d =cpus.getvalid(L11,0x00AF00); 
-	cout<<d<<endl; //Se escribio deberia esta W en EXC 
-	
-	
-	cpus.settag(CPU1,R,0x00AF00); //Escribe en el caché segundo miss
-	
-	d= cpus.getvalid(L11,0x00AF00);
-	cout<<"el que sigue es SHA"<<endl;
-	cout<<d<<endl; // Debería dar INV
-	
-	
-	d= cpus.getvalid(L12,0x00AF00);
-	cout<<d<<endl; // Debería dar MOD
-	
-	cpus.settag(CPU1,W,0x00AF00);
-	d = cpus.getvalid(L12,0x00AF00);
-	cout<<d<<endl; //deberia ser mod
-	d = cpus.getvalid(L11,0x00AF00);
-	cout<<d<<endl; //deberia ser INV
-	
-
-	//cout<<cpus.gettotalmisses()<<endl;
-	//cout<<cpus.gettotalhits()<<endl;
-	*/ 
