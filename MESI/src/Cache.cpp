@@ -215,12 +215,12 @@ bool Cache::settag(u32 memaddress, bool action){ //hay que cambiar la operación
 			assoc = this->getassoc(set);
 			this->cache[set][assoc].settag(tag);
 			this->setvalid(set,assoc,MOD);
-			cout<<"Ya modificó al 1"<<endl;
-			cout<<"tag: "<< tag<<endl;
+			//cout<<"Ya modificó al 1"<<endl;
+			//cout<<"tag: "<< tag<<endl;
 			for(int i =0; i<pair->blockamm;i++){
-				cout<<"pair: "<<pair->gettag(set,i)<<endl;
+				//cout<<"pair: "<<pair->gettag(set,i)<<endl;
 				if(tag == pair->gettag(set,i)){
-					cout<<"aquí lo invalidé"<<endl;
+					//cout<<"aquí lo invalidé"<<endl;
 					pair->setvalid(set,i,INV);
 				}		
 			}	
