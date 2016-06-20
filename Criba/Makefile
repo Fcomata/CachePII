@@ -1,13 +1,9 @@
 all: 
 
-C: Criba.cpp
-	g++ Criba.cpp -o Criba
-S: Secuencial.cpp
-	mpic++ -fopenmp Secuencial.cpp -o Secuencial
+S:Secuencial.cpp
+	mpic++ Secuencial.cpp -o Secuencial && ./Secuencial
 P:Paralelo.cpp
-	mpic++ -fopenmp Paralelo.cpp -o Paralelo
+	mpic++ Paralelo.cpp -o Paralelo && mpirun -np 4 Paralelo
 clean:
-	rm Secuencial
-	rm Paralelo
-	rm Criba
+	rm Paralelo && rm Secuencial
 

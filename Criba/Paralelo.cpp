@@ -16,8 +16,7 @@ using namespace std;
 
 	
 	int 	global[Size];
-	int 	c;
- 	int BoolNum[Size];	//Arreglo de Validez de Numeros	
+ 	int 	BoolNum[Size];	//Arreglo de Validez de Numeros	
 
 
 void criba(){
