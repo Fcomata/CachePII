@@ -1,0 +1,16 @@
+Para compilar y ejecutar se necesita la libreria de mpi; para esto se deben correr los siguiente comandos
+
+sudo apt­-get install libopenmpi-­dev
+sudo apt­-get install libopenmpi­-bin
+
+Seguidamente, en este Path con el makefile se pueden compilar cada archivo (Secuencial.cpp y Paralelo.cpp)
+
+Para el codigo Secuencial;
+
+	make S
+
+Para el codigo Paralelo;
+
+	make P
+
+
